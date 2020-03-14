@@ -5,6 +5,8 @@ const bootcampsRoutes = require('./router/bootcamps')
 
 // Load env vars
 dotenv.config()
+// Load DB connection
+require('./db/mongoose')
 
 const app = express()
 const port = process.env.PORT || 3000
