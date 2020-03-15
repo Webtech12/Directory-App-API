@@ -20,7 +20,7 @@ router.post(`${Url}/bootcamps`, async (req, res) => {
     const bootcamp = new Bootcamp(req.body)
     await postData(bootcamp)
         .then((result) => res.status(201).send({ success: true, data: result }))
-        .catch(err => res.status(400).send(err.message))
+        .catch(err => res.status(400).send({ success: false, error: err.message }))
 
 })
 
@@ -35,13 +35,13 @@ router.patch(`${Url}/bootcamps/:id`, async (req, res) => {
 
     await updateData(Bootcamp, req.params.id, req.body)
         .then(result => res.status(200).send(result))
-        .catch(err => res.status(404).send(err.message))
+        .catch(err => res.status(404).send({ msg: 'Unable to find', error: err.message }))
 })
 
 router.delete(`${Url}/bootcamps/:id`, async (req, res) => {
     await deleteData(Bootcamp, req.params.id)
         .then(result => res.status(200).send(result))
-        .catch(err => res.status(404).send(err.message))
+        .catch(err => res.status(404).send({ msg: 'Unable to find', error: err.message }))
 })
 
 
