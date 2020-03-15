@@ -7,12 +7,12 @@ const { postData, fetchAll, fetchById, updateData, deleteData } = require('../he
 
 
 router.get(`${Url}/bootcamps`, async (req, res) => {
-    await fetchAll(Bootcamp).then(result => res.status(200).send(result)).catch(err => res.status(500).send(err.message))
+    await fetchAll(Bootcamp).then(result => res.status(200).send({ success: true, count: result.length, data: result })).catch(err => res.status(500).send(err.message))
 })
 
 router.get(`${Url}/bootcamps/:id`, async (req, res) => {
     await fetchById(Bootcamp, req.params.id)
-        .then(result => res.status(200).send(result))
+        .then(result => res.status(200).send({ success: true, data: result }))
         .catch(err => res.status(500).send({ msg: 'Unable to find', error: err.message }))
 })
 
