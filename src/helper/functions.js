@@ -9,8 +9,10 @@ const postData = asyncHandler(async (params) => {
 })
 
 // general async get * 
-const fetchAll = asyncHandler(async (parms) => {
-    const lists = await parms.find({})
+const fetchAll = asyncHandler(async (...args) => {
+
+    console.log(args)
+    const lists = await args[0].find(JSON.parse(args[1]))
     return lists
 })
 
