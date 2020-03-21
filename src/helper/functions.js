@@ -1,5 +1,6 @@
 // requiring global async handler
 const asyncHandler = require('../middleware/async')
+const geocoder = require('./geocode')
 
 // general async insert 
 const postData = asyncHandler(async (params) => {
@@ -40,10 +41,36 @@ const deleteData = asyncHandler(async (...args) => {
 })
 
 
+
+// Get bootcamps within a certain radius
+// @route   /bootcamps/radius/:zipcode/:distance
+const getBootcampsInRadius = asyncHandler(async (...args) => {
+    const { zipcode, distance } = args[1]
+
+    // Get lng/lat from geocoder
+    const loc = await geocoder.geocode(zipcode)
+    const lat = loc[0].latitude
+    const lng = loc[0].longitude
+
+    // Cal radius using radians
+    // Divide dist with radius of earth
+    // Earth radius = 3,936 mi / 6,378 km
+    const radius = distance / 6378
+
+    const bootcamps = await args[0].find({
+        location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }
+    })
+
+    return bootcamps
+
+})
+
+
 module.exports = {
     postData,
     fetchAll,
     fetchById,
     updateData,
-    deleteData
+    deleteData,
+    getBootcampsInRadius
 }

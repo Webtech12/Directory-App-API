@@ -3,7 +3,7 @@ const router = express.Router()
 
 const Url = require('../helper/helper')
 const Bootcamp = require('../models/bootcamp')
-const { postData, fetchAll, fetchById, updateData, deleteData } = require('../helper/functions')
+const { postData, fetchAll, fetchById, updateData, deleteData, getBootcampsInRadius } = require('../helper/functions')
 
 
 router.get(`${Url}/bootcamps`, async (req, res) => {
@@ -41,6 +41,14 @@ router.patch(`${Url}/bootcamps/:id`, async (req, res) => {
 router.delete(`${Url}/bootcamps/:id`, async (req, res) => {
     await deleteData(Bootcamp, req.params.id)
         .then(result => res.status(200).send(result))
+        .catch(err => res.status(404).send({ msg: 'Unable to find', error: err.message }))
+})
+
+
+// Get bootcamps within a certain radius
+router.get(`${Url}/bootcamps/radius/:zipcode/:distance`, async (req, res) => {
+    await getBootcampsInRadius(Bootcamp, req.params)
+        .then(result => res.status(200).send({ success: true, count: result.length, data: result }))
         .catch(err => res.status(404).send({ msg: 'Unable to find', error: err.message }))
 })
 
