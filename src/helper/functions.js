@@ -20,8 +20,31 @@ const fetchAll = asyncHandler(async (...args) => {
     } else {
         sortBy = '-createdAt'
     }
-    const lists = await args[0].find(JSON.parse(args[1])).select(fields).sort(sortBy)
-    return lists
+
+    // Pagination
+    const page = parseInt(args[2].page, 10) || 1
+    const limit = parseInt(args[2].limit, 10) || 100
+    const startIndex = (page - 1) * limit
+    const endIndex = page * limit
+    const total = await args[0].countDocuments()
+
+    // Pagintaion result
+    const pagination = {}
+    if (endIndex < total) {
+        pagination.next = {
+            page: page + 1,
+            limit
+        }
+    }
+    if (startIndex > 0) {
+        pagination.prev = {
+            page: page - 1,
+            limit
+        }
+    }
+
+    const lists = await args[0].find(JSON.parse(args[1])).select(fields).sort(sortBy).skip(startIndex).limit(limit)
+    return {lists, pagination}
 })
 
 // general async get by id 
