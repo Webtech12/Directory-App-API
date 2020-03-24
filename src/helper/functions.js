@@ -10,9 +10,17 @@ const postData = asyncHandler(async (params) => {
 
 // general async get * 
 const fetchAll = asyncHandler(async (...args) => {
-
-    console.log(args)
-    const lists = await args[0].find(JSON.parse(args[1]))
+    let fields;
+    let sortBy;
+    if (args[2].select) {
+        fields = args[2].select.split(',').join(' ')
+    }
+    if (args[2].sort) {
+        sortBy = args[2].sort.split(',').join(' ')
+    } else {
+        sortBy = '-createdAt'
+    }
+    const lists = await args[0].find(JSON.parse(args[1])).select(fields).sort(sortBy)
     return lists
 })
 

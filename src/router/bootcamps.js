@@ -10,14 +10,13 @@ router.get(`${Url}/bootcamps`, async (req, res) => {
     // Copy req.query
     const reqQuery = { ...req.query }
     // fields to exclude
-    const removeFields = ['select']
+    const removeFields = ['select','sort']
     // loop over remove fields and delete them from reqQuery
     removeFields.forEach(params => delete reqQuery[params])
     // create query string
     let queryStr = JSON.stringify(reqQuery)
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`)
-
-    await fetchAll(Bootcamp, queryStr).then(result => res.status(200).send({ success: true, count: result.length, data: result })).catch(err => res.status(500).send(err.message))
+    await fetchAll(Bootcamp, queryStr, req.query).then(result => res.status(200).send({ success: true, count: result.length, data: result })).catch(err => res.status(500).send(err.message))
 })
 
 router.get(`${Url}/bootcamps/:id`, async (req, res) => {
